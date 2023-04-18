@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Smart Webradio Clock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/pico-bootstrap-grid.css">
+	<link rel="icon" type="image/png" href="i/logo-32.png" />
+	<script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <main class="container">
+		<div class="headings">
+			<img src="i/logo-64.png" style="float:right">
+			<h2>Smart Webradio Clock</h2>
+			<h3>By Matières & Lumière</h3>
+		</div>
+		<details>
+			<summary role="button">Network</summary>
+			<form action="/doconfig" id="formconfig" role="form">
+				<article>
+					<header>Wifi (MAC : %WIFIMAC%)</header>
+					<div class="grid">
+						<label for="ssid">
+							SSID
+							<input type="text" id="ssid" name="wifissid" placeholder="Wifi SSID" value="%WIFISSID%">
+						</label>
+						<label for="password">
+							Password
+							<input type="text" id="password" name="wifipass" placeholder="Wifi password" value="%WIFIPASS%">
+						</label>
+					</div>
+				</article>
+				<ins style="position:absolute;opacity:0" id="resultconfig"><strong>Done!</strong></ins>
+				<button type="submit" class="secondary">Save</button>
+			</form>
+		</details>
+		<details>
+			<summary role="button">Device</summary>
+			<form action="/doconfig" id="formdisplay" role="form">
+				<article>
+					<header>Luminosity</header>
+					<div class="grid">
+						<label for="lumlvl0">
+							Night level
+							<input type="range" id="lumlvl0" name="lumlvl0" min="1" max="127" value="%LUMLVL0%">
+						</label>
+						<label for="lumlvl1">
+							Day level
+							<input type="range" id="lumlvl1" name="lumlvl1" min="128" max="255" value="%LUMLVL1%">
+						</label>
+						<label for="lumsens">
+							Ambient sensitivity
+							<input type="range" id="lumsens" name="lumsens" min="0" max="100" value="%LUMSENS%">
+						</label>
+					</div>
+				</article>
+				<article>
+					<header>Clock</header>
+						<label for="clkrgb">
+							Color
+							<input type="color" id="clkrgb" name="clkrgb" value="%CLKRGB%">
+						</label>
+					</div>
+				</article>
+				<article>
+					<header>Sunset rising</header>
+					<fieldset>
+						<legend>Lighting panel</legend>
+						<label for="lumout0">
+							<input type="radio" id="lumout0" name="lumout" value="0" %SUNRGB0%> Disabled
+						</label>
+						<label for="lumout1">
+							<input type="radio" id="lumout1" name="lumout" value="1" %SUNRGB1%> Connected
+						</label>
+					</fieldset>
+				</article>
+				<ins style="position:absolute;opacity:0" id="resultdisplay"><strong>Done!</strong></ins>
+				<button type="submit" class="secondary">Save</button>
+			</form>
+		</details>
+		<details>
+			<summary role="button">Time and radio</summary>
+			<form action="/doconfig" id="formstation" role="form">
+				<article>
+					<header>Time</header>
+					<label for="ntp">
+						NTP server <a href="https://www.ntppool.org" target="_blank" style="font-size: 80%">(list on NTP project)</a>
+						<input type="text" id="ntp" name="ntp" placeholder="NTP server" value="%NTP%">
+					</label>
+					<label for="tz">
+						Time Zone <a href="https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv"  target="_blank" style="font-size: 80%">(list here)</a>
+						<input type="text" id="tz" name="tz" placeholder="Time zone" value="%TZ%">
+					</label>
+				</article>
+				<article>
+					<header>Stations</header>
+					<div class="row">
+						<div class="col-11">
+							<input type="text" id="url_1" name="url1" value="%URL1%">
+						</div>
+						<div class="col-1">
+							<img id="btnplay_1" src="/i/play.png">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-11">
+							<input type="text" id="url_2" name="url2" value="%URL2%">
+						</div>
+						<div class="col-1">
+							<img id="btnplay_2" src="/i/play.png">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-11">
+							<input type="text" id="url_3" name="url3" value="%URL3%">
+						</div>
+						<div class="col-1">
+							<img id="btnplay_3" src="/i/play.png">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-11">
+							<input type="text" id="url_4" name="url4" value="%URL4%">
+						</div>
+						<div class="col-1">
+							<img id="btnplay_4" src="/i/play.png">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-11">
+							<input type="text" id="url_5" name="url5" value="%URL5%">
+						</div>
+						<div class="col-1">
+							<img id="btnplay_5" src="/i/play.png">
+						</div>
+					</div>
+					<audio id="player"></audio>
+				</article>
+				<ins style="position:absolute;opacity:0" id="resultstation"><strong>Done!</strong></ins>
+				<button type="submit" class="secondary">Save</button>
+			</form>
+			<label for="range" id="volume" style="display:none">Volume
+				<input type="range" min="0" max="100" value="50" id="range" name="range">
+			</label>
+			<audio id="player"></audio>
+		</details>
+		<details>
+			<summary role="button">Weather</summary>
+			<a href="https://open-meteo.com/" target="_blank">Weather data by Open-Meteo.com</a>
+			<form action="/doconfig" id="formmeteo" role="form">
+				<article>
+					<header>Location</header>
+					<div class="grid">
+						<label for="lat">
+							Latitude
+							<input type="text" id="lat" name="lat" placeholder="Latitude" value="%LAT%">
+						</label>
+						<label for="lon">
+							Longitude
+							<input type="text" id="lon" name="lon" placeholder="Longitude" value="%LON%">
+						</label>
+					</div>
+				</article>
+				<article>
+					<header>Wakeup early on bad weather (in minute)</header>
+					<div class="grid">
+						<label for="rainy1">
+							Slight
+							<input type="number" id="rainy1" name="rainy1" min="0" max="60" value="%RAINY1%">
+						</label>
+						<label for="rainy2">
+							Moderate
+							<input type="number" id="rainy2" name="rainy2" min="0" max="60" value="%RAINY2%">
+						</label>
+						<label for="rainy1">
+							Heavy
+							<input type="number" id="rainy3" name="rainy3" min="0" max="60" value="%RAINY3%">
+						</label>
+					</div>
+				</article>
+				<ins style="position:absolute;opacity:0" id="resultmeteo"><strong>Done!</strong></ins>
+				<button type="submit" class="secondary">Save</button>
+			</form>
+		</details>
+		<details>
+			<summary role="button">Tools</summary>
+			<form method='post' action='/doupdate' enctype='multipart/form-data'>
+				<article>
+					<header>Update firmware %VERSION%</header>
+					<label for="formBinSm" class="form-label">Select .bin file to upload</label>
+					<input type="file" id="formBinSm" name='update'>
+					<footer>
+						<ins style="position:absolute;opacity:0" id="resultfirmware"><strong>Enregistr&eacute;!</strong></ins>
+						<button type="submit" class="secondary">Update</button>
+					</footer>
+				</article>
+			</form>
+			<form method='post' action='/dofile' enctype='multipart/form-data'>
+				<article>
+					<header>Send file</header>
+					<label for="formFileSm" class="form-label">Select file to send (config, images,...)</label>
+					<input class="form-control form-control-sm" id="formFileSm" type="file" name='update'>
+					<footer>
+						<ins style="position:absolute;opacity:0" id="resultfile"><strong>Enregistr&eacute;!</strong></ins>
+						<button type="submit" class="secondary">Send</button>
+					</footer>
+				</article>
+			</form>
+			<div class="grid">
+				<a href="/config.json" role="button" class="contrast" style="margin-bottom:2px" download>Download configuration file</a>
+				<a href="/restart" role="button" class="contrast" style="margin-bottom:2px">Reset</a>
+			</div>
+		</details>
+	</main>
+	<script>
+		var player = document.getElementById('player');
+		document.getElementById("range").value = player.volume*100;
+		window.addEventListener('load', onLoad);
+		function onLoad(event) {
+			$('#formdisplay').submit(function( event ) {
+				event.preventDefault();
+				var posting = $.post(event.currentTarget.action, $(this).serialize() );
+				posting.done(function( data ) {
+					$("#resultdisplay").fadeTo(100, 1);
+					window.setTimeout(function() {$("#resultdisplay").fadeTo(500, 0)}, 2000);
+				});
+			});
+			$('#formconfig').submit(function( event ) {
+				event.preventDefault();
+				var posting = $.post(event.currentTarget.action, $(this).serialize() );
+				posting.done(function( data ) {
+					$("#resultconfig").fadeTo(100, 1);
+					window.setTimeout(function() {$("#resultconfig").fadeTo(500, 0)}, 2000);
+				});
+			});
+			$('#formstation').submit(function( event ) {
+				event.preventDefault();
+				var posting = $.post(event.currentTarget.action, $(this).serialize() );
+				posting.done(function( data ) {
+					$("#resultstation").fadeTo(100, 1);
+					window.setTimeout(function() {$("#resultstation").fadeTo(500, 0)}, 2000);
+				});
+			});
+			$('#formmeteo').submit(function( event ) {
+				event.preventDefault();
+				var posting = $.post(event.currentTarget.action, $(this).serialize() );
+				posting.done(function( data ) {
+					$("#resultmeteo").fadeTo(100, 1);
+					window.setTimeout(function() {$("#resultmeteo").fadeTo(500, 0)}, 2000);
+				});
+			});
+			$("img[id^='btnplay']").each(function( index, elt ) {
+				$('#'+elt.id).click(function() {
+					let active = $(this).attr("src") != "i/pause.png";
+					allOff();
+					if (active) {
+						$(this).attr("src","i/pause.png");
+						let num = this.id.split("_")[1];
+						let url = $('#url_'+num).val();
+						//$('#player').attr("src", url);
+						player.src = url;
+						player.play();
+					} else {
+						$(this).attr("src","i/play.png");
+						player.pause();
+					}
+				});
+			});
+			document.getElementById("range").addEventListener('input', (event) => {
+				player.volume = event.target.value/100;
+			});
+			player.onplay = function () {
+				$('#volume').show();
+			};
+			player.onpause = function () {
+				$('#volume').hide();
+			};
+		}
+		function allOff() {
+			$("img[id^='btnplay']").each(function( index, elt ) {
+				$(elt).attr("src","i/play.png");
+			});
+		}
+	</script>
+</body>					
